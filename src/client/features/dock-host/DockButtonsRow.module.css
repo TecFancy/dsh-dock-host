@@ -1,0 +1,7 @@
+/* Reduced-motion kill switch for the overflow menu. The component carries the
+   open/close transitions as inline styles; this family disables them. */
+@media (prefers-reduced-motion: reduce) {
+  .menu {
+    transition: none !important;
+  }
+}
