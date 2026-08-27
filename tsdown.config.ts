@@ -80,7 +80,13 @@ function styleInjectionModule(
     "}",
   ];
   source.push(
-    classMap === undefined ? "export {};" : `export default ${JSON.stringify(classMap)};`,
+    classMap === undefined
+      ? "export {};"
+      : // lightningcss emits cssExports keys in unspecified (hash-map) order;
+        // sort them so the bundle is byte-stable across builds and checkouts.
+        `export default ${JSON.stringify(
+          Object.fromEntries(Object.entries(classMap).sort(([a], [b]) => a.localeCompare(b))),
+        )};`,
   );
   return source.join("\n");
 }
