@@ -1,7 +1,7 @@
 # dsh-dock-host
 
 A generic **dock-button host** for the [dsh](https://github.com/deepseek-ai/deepseek-harness)
-web client, built as a [Feature-Sliced Design](https://github.com/fsd-template/fsd-react)
+web client, built as a [Feature-Sliced Design](https://feature-sliced.design)
 static Cordis plugin. It renders one row of buttons above the composer/input
 box and owns everything about _placement_: the `dockButtons` registry, theme
 tokens, i18n (`dockHost` namespace, zh/en), overflow "更多" menu, and motion.
