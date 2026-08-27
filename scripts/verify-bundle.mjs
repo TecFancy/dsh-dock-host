@@ -28,6 +28,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const bundlePath = resolve(repoRoot, "lib", "client.js");
+const pkg = JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
 const failures = [];
 
 function check(condition, message) {
@@ -62,9 +63,10 @@ if (exists(bundlePath)) {
     /return module\.exports;\s*\}\s*\}\);\s*$/.test(tail),
     "bundle must close with the CJS factory footer (tsdown footer misconfigured?)",
   );
+  const expectedId = `id: ${JSON.stringify(pkg.name)}`;
   check(
-    content.includes('id: "dsh-dock-host"'),
-    'bundle id mismatch: expected id: "dsh-dock-host"',
+    content.includes(expectedId),
+    `bundle id mismatch: expected ${expectedId} (client-modules loads the bundle under the package name; a non-matching id fails at boot with "loaded without registering")`,
   );
   check(
     !content.includes("styles.insert"),
@@ -80,7 +82,6 @@ if (exists(bundlePath)) {
   );
 }
 
-const pkg = JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
 const patchSource = readFileSync(resolve(repoRoot, "cordis.patch.yml"), "utf8");
 const patchName = patchSource.match(/^\s*name:\s*["']([^"']+)["']/m)?.[1];
 check(
