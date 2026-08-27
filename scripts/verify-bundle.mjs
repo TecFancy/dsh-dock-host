@@ -11,7 +11,11 @@
  *    bundle uses the current style-injection tag, not the removed `styles`
  *    runner builtin;
  * 6. the generated Typert /remote contribution is embedded (its endpoints
- *    must reach the browser inside the single file).
+ *    must reach the browser inside the single file);
+ * 7. cordis.patch.yml row name equals package.json name: the cordis loader
+ *    imports that name as an ESM specifier rooted at the profile directory,
+ *    so a scoped package must not declare a bare name here (this exact bug
+ *    killed the plugin tree at boot when the package was published scoped).
  *
  * Heuristic by design: the bundle is a CJS closure, so a full static analysis
  * of its externals is not practical here. The important invariants are the
@@ -24,7 +28,6 @@ import { fileURLToPath } from "node:url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(__dirname, "..");
 const bundlePath = resolve(repoRoot, "lib", "client.js");
-
 const failures = [];
 
 function check(condition, message) {
@@ -76,6 +79,14 @@ if (exists(bundlePath)) {
     "bundle must be a single file (codeSplitting must be disabled in tsdown.config.ts)",
   );
 }
+
+const pkg = JSON.parse(readFileSync(resolve(repoRoot, "package.json"), "utf8"));
+const patchSource = readFileSync(resolve(repoRoot, "cordis.patch.yml"), "utf8");
+const patchName = patchSource.match(/^\s*name:\s*["']([^"']+)["']/m)?.[1];
+check(
+  patchName === pkg.name,
+  `cordis.patch.yml row name ("${patchName}") must equal package.json name ("${pkg.name}") - the loader imports it as an ESM specifier`,
+);
 
 if (failures.length > 0) {
   console.error("bundle:check FAILED");

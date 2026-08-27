@@ -1,8 +1,8 @@
 # dsh-dock-host bundle patch.
 #
 # When this package is added to a profile with `dsh plugin --profile web add
-# dsh-dock-host`, the loader reconciles dsh.profile.bundles for packages
-# that declare dsh.bundle, so this row is registered on install.
+# @tecfancy/dsh-dock-host`, the loader reconciles dsh.profile.bundles for
+# packages that declare dsh.bundle, so this row is registered on install.
 #
 # Per-deployment configuration is NOT baked into this patch - override it in
 # the user layer ($DSH_HOME/cordis.patch.yml or the profile's cordis.patch.yml,
@@ -10,4 +10,4 @@
 
 - insert:
     - id: dsh-dock-host
-      name: "dsh-dock-host"
+      name: "@tecfancy/dsh-dock-host"
