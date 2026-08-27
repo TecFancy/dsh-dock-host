@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { readFileSync } from "node:fs";
-import { basename, resolve } from "node:path";
+import { basename, resolve, sep } from "node:path";
 import type { UserConfig } from "tsdown";
 import { transform } from "lightningcss";
 
@@ -55,7 +55,10 @@ const INLINE_CSS_QUERY = "?inline";
 /** Repo-root-relative path of a source file ("" when outside the repo). */
 function repoRelativePath(abs: string): string {
   const root = resolve(import.meta.dirname);
-  return abs.startsWith(root) ? abs.slice(root.length + 1) : basename(abs);
+  const rel = abs.startsWith(root) ? abs.slice(root.length + 1) : basename(abs);
+  // Normalize separators so the stamped //#region ids are byte-identical on
+  // Windows and POSIX checkouts (the committed-lib gate diffs both).
+  return rel.split(sep).join("/");
 }
 
 /** Emit one plugin-owned style injector and an optional CSS Modules export. */
