@@ -35,7 +35,7 @@ const profileDir = join(dshHome, "profiles", profile);
 console.log(`target profile: ${profileDir}`);
 
 if (copy) {
-  const targetPackageDir = join(profileDir, "node_modules", "dsh-dock-host");
+  const targetPackageDir = join(profileDir, "node_modules", "@tecfancy", "dsh-dock-host");
   if (!existsSync(profileDir) || !existsSync(join(profileDir, "node_modules"))) {
     console.error("profile or its node_modules is missing; falling back to printed commands");
   } else {

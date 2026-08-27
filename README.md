@@ -10,6 +10,20 @@ It is intentionally **feature-agnostic** — it knows nothing about what a
 specific button does. A concrete feature (terminal, files, ...) registers its
 own buttons into the registry; the host only places them.
 
+## Install
+
+```sh
+npm install @tecfancy/dsh-dock-host
+```
+
+Then mount it into a dsh profile (the CLI reconciles `dsh.profile.bundles`):
+
+```sh
+dsh plugin --profile web add @tecfancy/dsh-dock-host
+```
+
+Requires `@deepseek-ai/cordis` `^4.0.1` as a peer dependency.
+
 ## Layering (client-only)
 
 `dsh-dock-host` is a **client-only** plugin: the host half (`src/index.ts`)

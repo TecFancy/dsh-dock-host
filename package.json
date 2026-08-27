@@ -1,5 +1,5 @@
 {
-  "name": "dsh-dock-host",
+  "name": "@tecfancy/dsh-dock-host",
   "version": "0.1.0",
   "description": "Generic dock-button host for a dsh (DeepSeek Harness) web client: renders one row of buttons above the composer and owns the dockButtons registry, overflow menu, i18n, and motion. Built as a Feature-Sliced Design static Cordis plugin.",
   "keywords": [
