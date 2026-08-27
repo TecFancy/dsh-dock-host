@@ -79,4 +79,5 @@ export interface DockClientContext {
   locale: LocaleService;
   logger: (namespace: string) => DockLogger;
   effect: (fn: () => unknown, label?: string) => unknown;
+  provide: (name: string, value: unknown) => () => void;
 }

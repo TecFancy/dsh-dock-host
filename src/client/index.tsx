@@ -35,8 +35,10 @@ export function apply(ctx: DockClientContext): void {
   ctx.effect(() => ctx.locale.register(LOCALE_NS, "zh", DOCK_HOST_LOCALES.zh), "dsh-dock-host: zh");
   ctx.effect(() => ctx.locale.register(LOCALE_NS, "en", DOCK_HOST_LOCALES.en), "dsh-dock-host: en");
 
-  // Feature providers (terminal, files, ...) register buttons here in later
-  // layers; for now the host ships without any button.
+  // Publish the dockButtons registry as a client service so feature providers
+  // (terminal, files, ...) in later layers register their own buttons into
+  // the same row. The disposer returned by provide() is fibre-managed.
+  ctx.effect(() => ctx.provide("dockButtons", registry), "dsh-dock-host: dockButtons service");
 
   ctx.slots.inject(DOCK_SLOT, () =>
     ctx.slots.register({ name: DOCK_SLOT, id: DOCK_ID, order: DOCK_ORDER }, (slotProps) => {

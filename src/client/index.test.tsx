@@ -15,6 +15,7 @@ function fakeContext() {
   const registrations: { options: unknown; view: (props: unknown) => unknown }[] = [];
   const localeCalls: unknown[][] = [];
   const effects: (() => unknown)[] = [];
+  const provided: { name: string; value: unknown }[] = [];
   const logger = () => ({ info: vi.fn(), warn: vi.fn(), error: vi.fn() });
   const ctx: DockClientContext = {
     slots: {
@@ -40,26 +41,37 @@ function fakeContext() {
       effects.push(fn);
       return fn();
     },
+    provide: (name, value) => {
+      provided.push({ name, value });
+      return () => undefined;
+    },
   };
-  return { ctx, registrations, localeCalls, effects };
+  return { ctx, registrations, localeCalls, effects, provided };
 }
 
 describe("apply (client root)", () => {
   afterEach(cleanup);
 
   it("registers dockHost dictionaries and mounts the dock slot", () => {
-    const { ctx, registrations, localeCalls, effects } = fakeContext();
+    const { ctx, registrations, localeCalls, effects, provided } = fakeContext();
 
     apply(ctx);
 
     expect(localeCalls).toHaveLength(2);
     expect(localeCalls[0]?.[0]).toBe(LOCALE_NS);
     expect(localeCalls[1]?.[0]).toBe(LOCALE_NS);
-    expect(effects).toHaveLength(2);
+    expect(effects).toHaveLength(3);
     expect(registrations).toHaveLength(1);
     const registration = registrations[0]!;
     expect(registration.options).toMatchObject({ name: DOCK_SLOT, id: DOCK_ID });
     expect(registration.view).toBeTypeOf("function");
+    expect(provided).toHaveLength(1);
+    expect(provided[0]).toMatchObject({ name: "dockButtons" });
+    expect(provided[0]!.value).toMatchObject({
+      register: expect.any(Function),
+      list: expect.any(Function),
+      subscribe: expect.any(Function),
+    });
   });
 
   it("renders a dock row for the registered slot view", () => {
