@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import type {
   DockButton,
   DockButtonCtx,
@@ -9,6 +9,26 @@ import type {
 } from "../../shared/config/index.ts";
 import { DEFAULT_MAX_VISIBLE, DOCK_HOST_LOCALES, LOCALE_NS, labelOf } from "./dock.ts";
 import css from "./DockButtonsRow.module.css";
+
+/**
+ * Button content: a string icon stays a plain text prefix (legacy
+ * `"▸ Label"`); a React element icon renders as an inline glyph followed by
+ * the label, both inheriting the button's color.
+ */
+function buttonContent(button: DockButton): ReactNode {
+  const icon = button.icon;
+  if (typeof icon !== "string") {
+    const text = typeof button.label === "function" ? button.label() : button.label;
+    const name = text || button.id;
+    return (
+      <span style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
+        {icon}
+        <span>{name}</span>
+      </span>
+    );
+  }
+  return labelOf(button);
+}
 
 export interface DockButtonsRowProps {
   registry: DockButtonsRegistry;
@@ -139,7 +159,7 @@ export function DockButtonsRow(props: DockButtonsRowProps): JSX.Element | null {
       <div style={rowStyle}>
         {visible.map((button) => (
           <button key={button.id} onClick={() => run(button)} style={btnStyle}>
-            {labelOf(button)}
+            {buttonContent(button)}
           </button>
         ))}
         {overflow.length > 0 && (
@@ -180,7 +200,7 @@ export function DockButtonsRow(props: DockButtonsRowProps): JSX.Element | null {
                   }}
                   style={{ ...btnStyle, textAlign: "left" }}
                 >
-                  {labelOf(button)}
+                  {buttonContent(button)}
                 </button>
               ))}
             </div>

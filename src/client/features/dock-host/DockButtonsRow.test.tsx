@@ -28,6 +28,19 @@ describe("labelOf", () => {
 describe("DockButtonsRow", () => {
   afterEach(cleanup);
 
+  it("renders a React icon element before the label, keeping text icons as prefixes", () => {
+    const props = baseProps();
+    props.registry.register(
+      makeButton("term", { label: "Terminal", icon: <svg data-testid="term-icon" /> }),
+    );
+    props.registry.register(makeButton("legacy", { icon: "⌘" }));
+    render(<DockButtonsRow {...props} />);
+    const term = screen.getByText("Terminal");
+    expect(term.closest("button")?.querySelector("svg")).not.toBeNull();
+    expect(term.closest("button")?.textContent).toContain("Terminal");
+    expect(screen.getByText("⌘ legacy")).not.toBeNull();
+  });
+
   it("renders nothing without input/inputActions", () => {
     const { container } = render(<DockButtonsRow registry={createRegistry()} />);
     expect(container.firstChild).toBeNull();

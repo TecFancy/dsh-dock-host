@@ -7,6 +7,7 @@
  * must NEVER import any @deepseek-ai/* runtime value: everything here is a
  * shape, and the real objects are injected by the dsh web host at runtime.
  */
+import type { ReactElement } from "react";
 export interface SlotRegisterOptions {
     name: string;
     id: string;
@@ -47,7 +48,12 @@ export interface DockButton {
     id: string;
     order?: number;
     label: string | (() => string);
-    icon?: string;
+    /**
+     * Optional leading glyph. A string renders as a plain text prefix
+     * (`"▸ Label"`); a React element (e.g. an inline SVG icon) renders as a
+     * standalone glyph before the label, inheriting the button color.
+     */
+    icon?: string | ReactElement;
     enabled?: boolean | ((ctx: DockButtonCtx) => boolean);
     primary?: boolean;
     run(ctx: DockButtonCtx): void | Promise<void>;

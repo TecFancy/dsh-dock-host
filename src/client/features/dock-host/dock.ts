@@ -18,9 +18,13 @@ export const DOCK_HOST_LOCALES = {
   en: { more: "More", less: "Collapse" },
 } as const;
 
-/** Render a button's label (string or thunk), with an optional icon prefix. */
+/**
+ * Render a button's label as plain text: a string icon stays a text prefix
+ * (`"▸ Label"`). A React element icon is not stringified here (renderers use
+ * {@link DockButtonsRow} instead); the text-only form treats it as unset.
+ */
 export function labelOf(button: DockButton): string {
   const text = typeof button.label === "function" ? button.label() : button.label;
   const name = text || button.id;
-  return button.icon ? `${button.icon} ${name}` : name;
+  return typeof button.icon === "string" && button.icon !== "" ? `${button.icon} ${name}` : name;
 }

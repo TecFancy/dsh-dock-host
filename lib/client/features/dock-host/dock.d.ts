@@ -21,6 +21,10 @@ export declare const DOCK_HOST_LOCALES: {
         readonly less: "Collapse";
     };
 };
-/** Render a button's label (string or thunk), with an optional icon prefix. */
+/**
+ * Render a button's label as plain text: a string icon stays a text prefix
+ * (`"▸ Label"`). A React element icon is not stringified here (renderers use
+ * {@link DockButtonsRow} instead); the text-only form treats it as unset.
+ */
 export declare function labelOf(button: DockButton): string;
 //# sourceMappingURL=dock.d.ts.map
